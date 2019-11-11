@@ -1,0 +1,259 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "description": "Publisher Api",
+    "version": "0.2",
+    "title": "Publisher service Api",
+    "contact": {
+      "email": "ramini.rohit@gmail.com"
+    }
+  },
+  "host": "publisherapprramini.cfapps.io",
+  "schemes": [
+    "https"
+  ],
+  "basePath": "/v1/assignment",
+  "tags": [
+    {
+      "name": "publisher account api",
+      "description": "will receive above Json request and post that message to Kafka."
+    }
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "parameters": {
+    "X-B3-TraceId": {
+      "name": "X-B3-TraceId",
+      "in": "header",
+      "description": "This is interactionId or correlationId equivalent that is required to passed to MW/Backend. If request is from app, they also pass this to a web-view request as X-B3-TraceId header.",
+      "required": true,
+      "type": "string"
+    },
+    "X-B3-SpanId": {
+      "name": "X-B3-SpanId",
+      "in": "header",
+      "description": "App need to pass X-B3-SpanId in header.",
+      "required": true,
+      "type": "string"
+    },
+    "Authorization": {
+      "name": "Authorization",
+      "in": "header",
+      "description": "Access token that is received from IAM after authentication.",
+      "required": true,
+      "type": "string"
+    },
+    "Activity-Id": {
+      "name": "activity_id",
+      "in": "header",
+      "description": "DESKTOP, MOBILE",
+      "required": true,
+      "type": "string"
+    },
+    "AplicationID": {
+      "name": "application_id",
+      "in": "header",
+      "required": true,
+      "type": "string"
+    }
+  },
+  "paths": {
+    "/publisher": {
+      "post": {
+        "tags": [
+          "publish"
+        ],
+        "summary": "Publishes Request to kafka producer",
+        "description": "Publisher service",
+        "operationId": "publish",
+        "parameters": [
+          {
+            "$ref": "#/parameters/X-B3-TraceId"
+          },
+          {
+            "$ref": "#/parameters/X-B3-SpanId"
+          },
+          {
+            "$ref": "#/parameters/Activity-Id"
+          },
+          {
+            "$ref": "#/parameters/Authorization"
+          },
+          {
+            "$ref": "#/parameters/AplicationID"
+          },
+          {
+            "name": "request",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/PublisherRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK",
+            "schema": {
+              "$ref": "#/definitions/PublisherResponse"
+            }
+          },
+          "400": {
+            "description": "Bad request",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "401": {
+            "description": "Unauthorized",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "403": {
+            "description": "Forbidden",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "404": {
+            "description": "Not Found",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          },
+          "500": {
+            "description": "Internal Server Error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        }
+      }
+    }
+  },
+  "definitions": {
+    "PublisherRequest": {
+      "type": "object",
+      "required": [
+        "customerNumber",
+        "firstName",
+        "lastName",
+        "birthdate",
+        "country",
+        "countryCode",
+        "mobileNumber",
+        "email",
+        "customerStatus",
+        "address"
+      ],
+      "properties": {
+        "customerNumber": {
+          "type": "string",
+          "description": "customer number,alphanumeric and min 5 and max 50 length",
+          "minLength": 5,
+          "maxLength": 50
+        },
+        "firstName": {
+          "type": "string",
+          "description": "min 10 and max 50 length"
+        },
+        "lastName": {
+          "type": "string",
+          "description": "min 10 and max 50 length"
+        },
+        "birthdate": {
+          "type": "string",
+          "description": "date format",
+          "example": "DD-MM-YYYY"
+        },
+        "country": {
+          "type": "string",
+          "example": "India"
+        },
+        "countryCode": {
+          "type": "string",
+          "description": "max length 2",
+          "example": "IN"
+        },
+        "mobileNumber": {
+          "type": "number",
+          "description": "max length 10",
+          "example": 5555551216
+        },
+        "email": {
+          "type": "string",
+          "description": "max length 50",
+          "example": "abc@gmail.com"
+        },
+        "customerStatus": {
+          "type": "string",
+          "enum": [
+            "Restored",
+            "Suspended",
+            "Open",
+            "Closed"
+          ]
+        },
+        "address": {
+          "$ref": "#/definitions/Address"
+        }
+      }
+    },
+    "Address": {
+      "type": "object",
+      "required": [
+        "addressLine1",
+        "postalCode"
+      ],
+      "properties": {
+        "addressLine1": {
+          "type": "string",
+          "description": "street address"
+        },
+        "addressLine2": {
+          "type": "string",
+          "description": "optional street address"
+        },
+        "street": {
+          "type": "string",
+          "description": "city"
+        },
+        "postalCode": {
+          "type": "string",
+          "description": "max length 5"
+        }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "string",
+          "description": "Error code"
+        },
+        "message": {
+          "type": "string",
+          "description": "Error message"
+        }
+      }
+    },
+    "PublisherResponse": {
+      "type": "object",
+      "properties": {
+        "statusCode": {
+          "type": "string",
+          "description": "status code"
+        },
+        "statusDescription": {
+          "type": "string",
+          "description": "status description"
+        }
+      }
+    }
+  }
+}
