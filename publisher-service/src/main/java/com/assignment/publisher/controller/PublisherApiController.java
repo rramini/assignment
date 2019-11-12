@@ -41,6 +41,7 @@ public class PublisherApiController implements PublisherApi {
 		try {
 
 			PublisherResponse publisherResponse = null;
+			System.out.println("test");
 			// logger.info("getSubscriberLinesAPI:StatusCode: {}", HttpStatus.OK);
 			return new ResponseEntity<>(new PublisherResponse(), HttpStatus.OK);
 
