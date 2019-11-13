@@ -15,6 +15,8 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
+import com.assignment.publisher.jwt.JwtAuthenticationEntryPoint;
+import com.assignment.publisher.jwt.JwtRequestFilter;
 import com.assignment.publisher.service.impl.JwtUserDetailsServiceImpl;
 
 @Configuration
@@ -25,17 +27,15 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 	@Autowired
 	private JwtAuthenticationEntryPoint jwtAuthenticationEntryPoint;
 
-//	@Autowired
-//	private UserDetailsService userDetailsService;
-
 	@Autowired
 	private JwtRequestFilter jwtRequestFilter;
 
 	@Bean
+	@Override
 	public UserDetailsService userDetailsService() {
 		return new JwtUserDetailsServiceImpl();
-	};
-	
+	}
+
 	@Autowired
 	public void configureGlobal(AuthenticationManagerBuilder auth) throws Exception {
 		// configure AuthenticationManager so that it knows from where to load
@@ -72,5 +72,4 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 		httpSecurity.addFilterBefore(jwtRequestFilter, UsernamePasswordAuthenticationFilter.class);
 	}
 
-	
 }

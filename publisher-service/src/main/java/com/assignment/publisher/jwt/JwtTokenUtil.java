@@ -1,4 +1,4 @@
-package com.assignment.publisher.config;
+package com.assignment.publisher.jwt;
 
 import java.io.Serializable;
 import java.util.Date;
@@ -22,7 +22,7 @@ public class JwtTokenUtil implements Serializable {
 	 */
 	private static final long serialVersionUID = 5754889378607767151L;
 
-	public static final long JWT_TOKEN_VALIDITY = 5 * 60 * 60;
+	public static final long JWT_TOKEN_VALIDITY = 5l * 60l * 60l;
 
 	@Value("${jwt.secret}")
 	private String secret;

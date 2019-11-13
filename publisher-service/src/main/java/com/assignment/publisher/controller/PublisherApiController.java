@@ -6,6 +6,7 @@ import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
@@ -16,6 +17,8 @@ import com.assignment.publisher.api.PublisherApi;
 import com.assignment.publisher.models.PublisherRequest;
 import com.assignment.publisher.models.PublisherResponse;
 import com.assignment.publisher.models.exceptions.ApiException;
+import com.assignment.publisher.service.PublisherService;
+import com.assignment.publisher.utility.Util;
 
 import io.swagger.annotations.ApiParam;
 
@@ -24,8 +27,10 @@ import io.swagger.annotations.ApiParam;
 @Controller
 public class PublisherApiController implements PublisherApi {
 
-	private static final Logger logger = LoggerFactory.getLogger(PublisherApiController.class);
+	@Autowired
+	private PublisherService publisherService;
 
+	private static final Logger logger = LoggerFactory.getLogger(PublisherApiController.class);
 
 	public ResponseEntity<?> publish(
 			@ApiParam(value = "This is interactionId or correlationId equivalent that is required to passed to MW/Backend. If request is from app, they also pass this to a web-view request as X-B3-TraceId header.", required = true) @RequestHeader(value = "X-B3-TraceId", required = true) String xB3TraceId,
@@ -40,20 +45,28 @@ public class PublisherApiController implements PublisherApi {
 
 		try {
 
-			PublisherResponse publisherResponse = null;
-			System.out.println("test");
-			// logger.info("getSubscriberLinesAPI:StatusCode: {}", HttpStatus.OK);
-			return new ResponseEntity<>(new PublisherResponse(), HttpStatus.OK);
+			PublisherResponse publisherResponse = new PublisherResponse();
+			publisherService.publishToKafka(request);
 
-		} catch (Exception e) {
-			logger.error("getSubscriberLinesAPI:StatusCode: Failure:{}", e.getMessage());
-			// Error error = Util.buildErrorResponse(e.getMessage());
-			return new ResponseEntity<>(new Error(), HttpStatus.INTERNAL_SERVER_ERROR);
+			logger.info("publishAPI:StatusCode: {}", HttpStatus.OK);
+			publisherResponse.setStatusCode(HttpStatus.OK.toString());
+			return new ResponseEntity<>(publisherResponse, HttpStatus.OK);
+
+		} catch (ApiException e) {
+			logger.error("publishAPI:StatusCode: Failure:{}", e.getMessage());
+			com.assignment.publisher.models.Error error = Util.buildErrorResponse(e.getMessage());
+			return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
+		}
+
+		catch (Exception e) {
+			logger.error("publishAPI:StatusCode: Failure:{}", e.getMessage());
+			com.assignment.publisher.models.Error error = Util.buildErrorResponse(e.getMessage());
+			return new ResponseEntity<>(error, HttpStatus.INTERNAL_SERVER_ERROR);
 		}
 
 		finally {
 			final long elapsed = Calendar.getInstance().getTimeInMillis() - startTime;
-			logger.info("getSubscriberLinesAPI:StatusCode: {}", elapsed);
+			logger.info("publishAPI:StatusCode: {}", elapsed);
 		}
 
 	}

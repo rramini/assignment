@@ -1,4 +1,5 @@
-package com.assignment.publisher.config;
+package com.assignment.publisher.jwt;
+
 import java.io.IOException;
 import java.io.Serializable;
 
