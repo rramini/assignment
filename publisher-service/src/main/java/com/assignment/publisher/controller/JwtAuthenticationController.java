@@ -33,7 +33,7 @@ public class JwtAuthenticationController {
 	private JwtUserDetailsServiceImpl userDetailsService;
 
 	@PostMapping(value = "/authenticate")
-	public ResponseEntity<?> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
+	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
 
 		authenticate(authenticationRequest.getUsername(), authenticationRequest.getPassword());
 
