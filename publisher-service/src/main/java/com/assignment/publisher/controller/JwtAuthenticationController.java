@@ -17,7 +17,9 @@ import org.springframework.web.server.ResponseStatusException;
 import com.assignment.publisher.jwt.JwtTokenUtil;
 import com.assignment.publisher.models.JwtRequest;
 import com.assignment.publisher.models.JwtResponse;
+import com.assignment.publisher.models.UserInfo;
 import com.assignment.publisher.service.impl.JwtUserDetailsServiceImpl;
+import com.assignment.publisher.service.impl.UserInfoServiceImpl;
 
 @RestController
 @CrossOrigin
@@ -31,7 +33,11 @@ public class JwtAuthenticationController {
 
 	@Autowired
 	private JwtUserDetailsServiceImpl userDetailsService;
-
+	
+	@Autowired
+	private UserInfoServiceImpl userInfoServiceImpl ;
+	
+	
 	@PostMapping(value = "/authenticate")
 	public ResponseEntity<JwtResponse> createAuthenticationToken(@RequestBody JwtRequest authenticationRequest) {
 
@@ -43,6 +49,16 @@ public class JwtAuthenticationController {
 
 		return ResponseEntity.ok(new JwtResponse(token));
 	}
+
+	@PostMapping(value = "/authenticate/add")
+	public ResponseEntity<UserInfo> createUser(@RequestBody JwtRequest authenticationRequest) {
+
+		UserInfo userInfo = userInfoServiceImpl.addUser(authenticationRequest);
+
+		return ResponseEntity.ok(userInfo);
+	}
+
+	
 
 	private void authenticate(String username, String password) {
 		try {

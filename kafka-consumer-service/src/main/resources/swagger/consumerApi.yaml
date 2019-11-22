@@ -1,0 +1,114 @@
+swagger: '2.0'
+info:
+  description: Kafka Consumer Api
+  version: '0.2'
+  title: Consumer service Api
+  contact:
+    email: ramini.rohit@gmail.com
+host: consumerapprramini.cfapps.io
+schemes:
+  - https
+basePath: /v1/consume
+tags:
+  - name: Consumer Service account api
+    description: 'will Consume Json request and post that message to Database.'
+produces:
+  - application/json
+consumes:
+  - application/json
+parameters:
+  X-B3-TraceId:
+    name: X-B3-TraceId
+    in: header
+    description: >-
+      This is interactionId or correlationId equivalent that is required to
+      passed to MW/Backend. If request is from app, they also pass this to a
+      web-view request as X-B3-TraceId header.
+    required: true
+    type: string
+  X-B3-SpanId:
+    name: X-B3-SpanId
+    in: header
+    description: App need to pass X-B3-SpanId in header.
+    required: true
+    type: string
+  Authorization:
+    name: Authorization
+    in: header
+    description: Access token that is received from IAM after authentication.
+    required: true
+    type: string
+  Activity-Id:
+    name: activity_id
+    in: header
+    description: 'DESKTOP, MOBILE'
+    required: true
+    type: string
+  AplicationID:
+    name: application_id
+    in: header
+    required: true
+    type: string
+paths:
+  /consume:
+    post:
+      tags:
+        - consume
+      summary: Publishes Request to kafka producer
+      description: Publisher service
+      operationId: publish
+      parameters:
+        - $ref: '#/parameters/X-B3-TraceId'
+        - $ref: '#/parameters/X-B3-SpanId'
+        - $ref: '#/parameters/Activity-Id'
+        - $ref: '#/parameters/Authorization'
+        - $ref: '#/parameters/AplicationID'
+        - name: message
+          in: body
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: OK
+          schema:
+            $ref: '#/definitions/ConsumerResponse'
+        '400':
+          description: Bad request
+          schema:
+            $ref: '#/definitions/Error'
+        '401':
+          description: Unauthorized
+          schema:
+            $ref: '#/definitions/Error'
+        '403':
+          description: Forbidden
+          schema:
+            $ref: '#/definitions/Error'
+        '404':
+          description: Not Found
+          schema:
+            $ref: '#/definitions/Error'
+        '500':
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/Error'
+definitions:
+  Error:
+    type: object
+    properties:
+      code:
+        type: string
+        description: Error code
+      message:
+        type: string
+        description: Error message
+  ConsumerResponse:
+    type: object
+    properties:
+      statusCode:
+        type: string
+        description: status code
+      statusDescription:
+        type: string
+        description: status description

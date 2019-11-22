@@ -1,0 +1,17 @@
+server:
+  port: 8098
+spring:
+  kafka:
+    consumer:
+      bootstrap-servers: 127.0.0.1:9092
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      group-id: customer-group-listener
+      auto-offset-reset: earliest
+  datasource:
+    url: jdbc:mysql://localhost:3306/kafkarecords
+    username: publisher
+    password: password45
+  jpa:
+    hibernate:
+      ddl-auto: update

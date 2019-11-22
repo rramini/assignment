@@ -49,7 +49,7 @@ public class PublisherApiController implements PublisherApi {
 		logger.info("publish");
 
 		try {
-			if (errors != null) {
+			if (errors != null && !errors.getAllErrors().isEmpty()) {
 				String errorList = errors.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
 						.collect(Collectors.joining(", "));
 				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorList,

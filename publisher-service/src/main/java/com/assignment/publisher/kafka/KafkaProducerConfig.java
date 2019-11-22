@@ -4,6 +4,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.core.KafkaTemplate;
+import org.springframework.kafka.support.SendResult;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,9 +20,16 @@ public class KafkaProducerConfig {
 	public void sendMessage(String message) {
 
 		logger.info("$$ -> Producing message --> {}", message);
-		this.kafkaTemplate.send(TOPIC, message).addCallback(success -> logger.info("Message send successfully"),
-				throwable -> logger.error("Message send Fail"));
+		this.kafkaTemplate.send(TOPIC, message).addCallback(this::onMessageSendSuccess, this::onException);
 
+	}
+
+	private void onMessageSendSuccess(SendResult<String, String> sendResult) {
+		logger.debug("Message Sent successfully to topic: {}", sendResult);
+	}
+
+	public void onException(Throwable throwable) {
+		logger.error("Error in sending message: {}", throwable, throwable);
 	}
 
 }

@@ -1,0 +1,18 @@
+#### Kafka properties ####
+kafka:
+  bootstrap-servers: "${spring.embedded.kafka.brokers}"
+  bootstrapAddress: "${spring.embedded.kafka.brokers}"
+  publish:
+    topic: user_queue
+
+spring:
+  jpa:
+    hibernate:
+      ddl-auto: update
+  datasource:
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:3306/user_assignment
+    username: root
+    password: Bh@skar21`
+
+jwt:
+  secret: This is secret value
