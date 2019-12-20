@@ -1,42 +1,49 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Configuration status="WARN" monitorInterval="30">
-	<Properties>
-		<Property name="LOG_PATTERN">
-			%d{yyyy-MM-dd HH:mm:ss.SSS} %5p ${hostName}
-			--- [%15.15t] %-40.40c{1.} : %m%n%ex
-		</Property>
-	</Properties>
-	<Appenders>
-		<Console name="ConsoleAppender" target="SYSTEM_OUT"
-			follow="true">
-			<PatternLayout pattern="${LOG_PATTERN}" />
-		</Console>
-		<Socket name="socket" host="127.0.0.1" port="15000">
-			<PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8" />
-		</Socket>
-	</Appenders>
-	<Loggers>
-		<Logger name="com.example.log4j2demo" level="debug"
-			additivity="false">
-			<AppenderRef ref="ConsoleAppender" />
-		</Logger>
-		<Root level="info">
-			<AppenderRef ref="ConsoleAppender" />
-		</Root>
+<Configuration status="WARN" monitorInterval="30" packages="com.assignment.*">
+    <Properties>
+        <Property name="LOG_PATTERN">
+            [%d{yyy-MM-dd HH:mm:ss:SSS}] [%t] [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] %-5level %logger{36} - %spi%n
+        </Property>
+    </Properties>
 
-		<Logger name="splunk.logger" level="info">
-			<AppenderRef ref="socket" />
-		</Logger>
-	</Loggers>
-	<RollingFile name="FileAppender"
-		fileName="logs/log4j2-demo.log"
-		filePattern="logs/log4j2-demo-%d{yyyy-MM-dd}-%i.log">
-		<PatternLayout>
-			<Pattern>${LOG_PATTERN}</Pattern>
-		</PatternLayout>
-		<Policies>
-			<SizeBasedTriggeringPolicy size="10MB" />
-		</Policies>
-		<DefaultRolloverStrategy max="10" />
-	</RollingFile>
+ 
+
+    <Appenders>
+        <Console name="ConsoleAppender" target="SYSTEM_OUT">
+            <PatternLayout pattern="${LOG_PATTERN}" /> 
+            <!-- 
+            %d{yyyyMMdd HH:mm:ss.SSS} [%t] %-5level %logger{36} - %spi%n
+            <PatternLayout pattern="[%d{yyy-MM-dd HH:mm:ss:SSS}] [%X{X-B3-TraceId},%X{X-B3-SpanId},%X{X-B3-ParentSpanId},%X{X-Span-Export}] [%p] - %l - %m%n"/> -->
+        </Console>
+    
+        <RollingFile name="FileAppender"
+            fileName="logs/log4j2-demo.log"
+            filePattern="logs/log4j2-demo-%d{yyyy-MM-dd}-%i.log">
+            <PatternLayout pattern="${LOG_PATTERN}"/>
+            <Policies>
+                <SizeBasedTriggeringPolicy size="10MB" />
+            </Policies>
+            <DefaultRolloverStrategy max="10" />
+        </RollingFile>
+        
+        <Socket name="socket" host="127.0.0.1" port="5676">
+            <PatternLayout pattern="${LOG_PATTERN}" charset="UTF-8"/>
+        </Socket>
+    </Appenders>
+
+ 
+
+    <Loggers>
+        <Root level="all" additivity="false">
+            <AppenderRef ref="ConsoleAppender" level="INFO"/>
+            <AppenderRef ref="socket"/>
+        </Root>
+        <!-- <Logger name="com.prokarma.server.user" level="DEBUG"
+            additivity="false">
+            <AppenderRef ref="FileAppender" level="info"/>
+        </Logger> -->
+    </Loggers>
+
+ 
+
 </Configuration>

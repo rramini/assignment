@@ -1,11 +1,15 @@
 jwt:
   secret: assignmentkafka
+  user-header: user
+  
 spring:
   kafka:
     producer:
       bootstrap-servers: 3.82.60.32:9092
       key-serializer: org.apache.kafka.common.serialization.StringSerializer
       value-serializer: org.apache.kafka.common.serialization.StringSerializer
+    publish:
+      topic: user-queue-1
   datasource:
     url: jdbc:mysql://localhost:3306/kafkarecords
     username: publisher

@@ -15,3 +15,7 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+logging:
+  file: /var/log/app/kafka-consumer-service.log
+  level:
+    'com.assignment.consumer': DEBUG

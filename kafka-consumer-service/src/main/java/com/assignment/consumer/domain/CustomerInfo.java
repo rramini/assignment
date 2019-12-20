@@ -21,7 +21,7 @@ import lombok.ToString;
 public class CustomerInfo {
 
 	@Id
-	//@GeneratedValue(strategy = GenerationType.AUTO)
+	// @GeneratedValue(strategy = GenerationType.AUTO)
 	private Integer customerNumber = null;
 
 	private String firstName = null;
@@ -43,7 +43,7 @@ public class CustomerInfo {
 	private Address address;
 
 	private String customerStatus;
-	
+
 	private String completeJsonRequest;
 
 }

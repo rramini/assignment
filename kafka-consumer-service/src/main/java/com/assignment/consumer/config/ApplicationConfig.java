@@ -1,4 +1,4 @@
-package com.assignment.consumer.kafka.config;
+package com.assignment.consumer.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

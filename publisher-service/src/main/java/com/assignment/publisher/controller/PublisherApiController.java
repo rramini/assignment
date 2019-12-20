@@ -1,18 +1,15 @@
 package com.assignment.publisher.controller;
 
 import java.util.Calendar;
-import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.kafka.KafkaException;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
@@ -21,7 +18,6 @@ import org.springframework.web.server.ResponseStatusException;
 import com.assignment.publisher.api.PublisherApi;
 import com.assignment.publisher.models.PublisherRequest;
 import com.assignment.publisher.models.PublisherResponse;
-import com.assignment.publisher.models.exceptions.BadRequestException;
 import com.assignment.publisher.service.PublisherService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 
@@ -43,21 +39,12 @@ public class PublisherApiController implements PublisherApi {
 			@ApiParam(value = "DESKTOP, MOBILE", required = true) @RequestHeader(value = "activity_id", required = true) String activityId,
 			@ApiParam(value = "Access token that is received from IAM after authentication.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
 			@ApiParam(value = "", required = true) @RequestHeader(value = "application_id", required = true) String applicationId,
-			@ApiParam(value = "", required = true) @Valid @RequestBody PublisherRequest request, Errors errors) {
+			@ApiParam(value = "", required = true) @Valid @RequestBody PublisherRequest request) {
 
 		final long startTime = Calendar.getInstance().getTimeInMillis();
-		logger.info("publish");
-
 		try {
-			if (errors != null && !errors.getAllErrors().isEmpty()) {
-				String errorList = errors.getAllErrors().stream().map(DefaultMessageSourceResolvable::getDefaultMessage)
-						.collect(Collectors.joining(", "));
-				throw new ResponseStatusException(HttpStatus.BAD_REQUEST, errorList,
-						new BadRequestException("Bad Request while posting users", errors));
-			}
 			PublisherResponse publisherResponse = new PublisherResponse();
 			publisherService.publishToKafka(request);
-
 			logger.info("publishAPI:StatusCode: {}", HttpStatus.OK);
 			publisherResponse.setStatusCode(HttpStatus.OK.toString());
 			return new ResponseEntity<>(publisherResponse, HttpStatus.OK);

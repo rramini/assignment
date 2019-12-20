@@ -13,15 +13,15 @@ import lombok.ToString;
 @Setter
 @ToString
 @Entity
-public class Address {
+public class ErrorInfo {
 
-	@GeneratedValue(strategy = GenerationType.AUTO)
 	@Id
-	private Long address_id;
+	@GeneratedValue(strategy = GenerationType.AUTO)
+	private Integer errorId = null;
 
-	private String addressLine1;
-	private String addressLine2;
-	private String street;
-	private String postalCode;
+	private String errorType = null;
 
+	private String errorDescription = null;
+
+	private String payload;
 }

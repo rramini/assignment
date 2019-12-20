@@ -12,15 +12,15 @@ import lombok.Data;
 @Entity
 public class UserInfo {
 
-  @Column
-  @Id
-  private String username;
+	@Column
+	@Id
+	private String username;
 
-  @JsonIgnore
-  @Column
-  private String password;
+	@JsonIgnore
+	@Column
+	private String password;
 
-  @Column
-  private String role;
+	@Column
+	private String role;
 
 }

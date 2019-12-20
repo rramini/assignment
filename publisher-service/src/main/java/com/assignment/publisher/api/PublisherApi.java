@@ -3,7 +3,6 @@ package com.assignment.publisher.api;
 import javax.validation.Valid;
 
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.Errors;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,6 +38,6 @@ public interface PublisherApi {
 			@ApiParam(value = "DESKTOP, MOBILE", required = true) @RequestHeader(value = "activity_id", required = true) String activityId,
 			@ApiParam(value = "Access token that is received from IAM after authentication.", required = true) @RequestHeader(value = "Authorization", required = true) String authorization,
 			@ApiParam(value = "", required = true) @RequestHeader(value = "application_id", required = true) String applicationId,
-			@ApiParam(value = "", required = true) @Valid @RequestBody PublisherRequest request, Errors errors);
+			@ApiParam(value = "", required = true) @Valid @RequestBody PublisherRequest request);
 
 }

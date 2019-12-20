@@ -1,34 +1,40 @@
 package com.assignment.publisher.service.impl;
 
-import java.util.ArrayList;
-import java.util.Optional;
+import java.util.Arrays;
+import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.oauth2.provider.ClientDetails;
+import org.springframework.security.oauth2.provider.ClientDetailsService;
+import org.springframework.security.oauth2.provider.NoSuchClientException;
 import org.springframework.stereotype.Service;
-
-import com.assignment.publisher.models.UserInfo;
-import com.assignment.publisher.service.UserInfoService;
 
 @Service
 public class JwtUserDetailsServiceImpl implements UserDetailsService {
 
-	@Autowired
-	private UserInfoService userInfoService;
+	private final ClientDetailsService clientDetailsService;
 
-	@Override
-	public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
+	public JwtUserDetailsServiceImpl(ClientDetailsService clientDetailsService) {
+		this.clientDetailsService = clientDetailsService;
+	}
 
-		Optional<UserInfo> user = userInfoService.getUserByUsername(username);
-
-		if (user.isPresent()) {
-			return new User(user.get().getUsername(), user.get().getPassword(), new ArrayList<>());
-		} else {
-			throw new UsernameNotFoundException("User not found with username: " + username);
+	public UserDetails loadUserByUsername(String username) {
+		ClientDetails clientDetails;
+		try {
+			clientDetails = clientDetailsService.loadClientByClientId(username);
+		} catch (NoSuchClientException e) {
+			throw new UsernameNotFoundException(e.getMessage(), e);
 		}
+		String clientSecret = clientDetails.getClientSecret();
+		return new User(username, clientSecret, getAuthority());
+	}
+
+	private List<SimpleGrantedAuthority> getAuthority() {
+		return Arrays.asList(new SimpleGrantedAuthority("ROLE_ADMIN"));
 	}
 
 }

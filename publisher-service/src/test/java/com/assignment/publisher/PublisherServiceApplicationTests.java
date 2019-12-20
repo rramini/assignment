@@ -8,7 +8,6 @@ class PublisherServiceApplicationTests {
 
 	@Test
 	void contextLoads() {
-		System.out.println("tuuuuuuuujhgvcxdfghjkl;lkjhgvcxsaertyuiop[';lkjhgfdswertyuiop");
 	}
 
 }
